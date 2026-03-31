@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FMEA.ai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --panel: #ffffff;
+      --panel-alt: #f8fafc;
+      --navy: #1e2d4d;
+      --blue: #2563eb;
+      --blue-soft: #dbeafe;
+      --text: #122033;
+      --muted: #5f6f86;
+      --border: #dbe3ef;
+      --critical: #dc2626;
+      --high: #ea580c;
+      --medium: #d97706;
+      --low: #16a34a;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(30, 45, 77, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 24%),
+        linear-gradient(180deg, #f9fbff 0%, #ffffff 24%);
+      color: var(--text);
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      padding: 24px;
+    }
+
+    .app-shell {
+      max-width: 1360px;
+      margin: 0 auto;
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding: 18px 22px;
+      border: 1px solid rgba(30, 45, 77, 0.1);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background:
+        linear-gradient(160deg, var(--navy), #2f4c82),
+        var(--navy);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: var(--navy);
+      letter-spacing: -0.04em;
+    }
+
+    .brand-copy p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      color: var(--navy);
+      background: var(--panel);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .view {
+      display: none;
+      animation: fadeIn 240ms ease;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy {
+      padding: 42px;
+      background:
+        linear-gradient(135deg, rgba(30,45,77,0.98), rgba(37,99,235,0.92)),
+        var(--navy);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -20% auto;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.22), transparent 62%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.15);
+      margin-bottom: 18px;
+    }
+
+    .hero-copy h2 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+      max-width: 10ch;
+    }
+
+    .hero-copy .tagline {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .hero-copy .description {
+      max-width: 60ch;
+      font-size: 1.04rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.88);
+      margin-bottom: 28px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .hero-stat {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .hero-stat span {
+      color: rgba(255,255,255,0.76);
+      font-size: 0.92rem;
+    }
+
+    .hero-setup {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 1.2rem;
+      color: var(--navy);
+      letter-spacing: -0.04em;
+    }
+
+    .section-subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 15px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .input-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease, opacity 140ms ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+    }
+
+    .btn-secondary {
+      background: #eff6ff;
+      color: var(--blue);
+      border: 1px solid #bfdbfe;
+    }
+
+    .btn-ghost {
+      background: #fff;
+      color: var(--navy);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: #fff1f2;
+      color: var(--critical);
+      border: 1px solid #fecdd3;
+    }
+
+    .workspace {
+      display: grid;
+      gap: 24px;
+    }
+
+    .form-panel {
+      padding: 28px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .full-span {
+      grid-column: 1 / -1;
+    }
+
+    .radio-group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .radio-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: border-color 140ms ease, background 140ms ease;
+    }
+
+    .radio-card:has(input:checked) {
+      border-color: var(--blue);
+      background: #eff6ff;
+    }
+
+    .radio-card input {
+      margin-top: 4px;
+    }
+
+    .radio-copy strong {
+      display: block;
+      color: var(--navy);
+    }
+
+    .radio-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .cta-bar {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .cta-copy {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .generate-btn {
+      padding: 16px 26px;
+      font-size: 1rem;
+      min-width: 190px;
+    }
+
+    .status-banner {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .status-banner.show {
+      display: block;
+    }
+
+    .status-error {
+      background: #fff1f2;
+      color: #9f1239;
+      border: 1px solid #fecdd3;
+    }
+
+    .status-info {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .loading-state {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      margin-top: 18px;
+      border-radius: 14px;
+      background: var(--panel-alt);
+      border: 1px dashed var(--border);
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    .loading-state.show {
+      display: flex;
+    }
+
+    .spinner {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 3px solid rgba(37, 99, 235, 0.2);
+      border-top-color: var(--blue);
+      animation: spin 900ms linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .results-stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .results-header {
+      padding: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-start;
+      justify-content: space-between;
+      background:
+        linear-gradient(135deg, rgba(30,45,77,1), rgba(36,85,165,1)),
+        var(--navy);
+      color: #fff;
+    }
+
+    .results-header h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      letter-spacing: -0.05em;
+    }
+
+    .results-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .meta-pill {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .summary-card {
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      display: grid;
+      gap: 10px;
+    }
+
+    .summary-card.blue {
+      border-color: #bfdbfe;
+      background: linear-gradient(180deg, #eff6ff, #ffffff);
+    }
+
+    .summary-card.red {
+      border-color: #fecaca;
+      background: linear-gradient(180deg, #fef2f2, #ffffff);
+    }
+
+    .summary-card.orange {
+      border-color: #fed7aa;
+      background: linear-gradient(180deg, #fff7ed, #ffffff);
+    }
+
+    .summary-card.gray {
+      border-color: #e2e8f0;
+      background: linear-gradient(180deg, #f8fafc, #ffffff);
+    }
+
+    .summary-card span {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .summary-card strong {
+      font-size: 2rem;
+      color: var(--navy);
+      letter-spacing: -0.05em;
+    }
+
+    .top-risks {
+      padding: 22px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .panel-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      color: var(--navy);
+      letter-spacing: -0.04em;
+    }
+
+    .panel-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .risk-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .risk-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+    }
+
+    .risk-card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .risk-card-title {
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.35;
+    }
+
+    .risk-card-subtitle {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-top: 4px;
+    }
+
+    .risk-score {
+      min-width: 82px;
+      text-align: right;
+    }
+
+    .risk-score span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .risk-score strong {
+      font-size: 2rem;
+      letter-spacing: -0.06em;
+    }
+
+    .risk-card p {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 0.94rem;
+    }
+
+    .owner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      border-radius: 999px;
+      padding: 9px 12px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--navy);
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+    }
+
+    .table-panel {
+      overflow: hidden;
+    }
+
+    .table-toolbar {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1180px;
+      background: #fff;
+    }
+
+    th, td {
+      padding: 14px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.93rem;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #f8fafc;
+      z-index: 1;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    th button {
+      all: unset;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font: inherit;
+      color: inherit;
+    }
+
+    tbody tr:hover {
+      background: #fbfdff;
+    }
+
+    .cell-actions {
+      max-width: 260px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    .priority-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 84px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .priority-critical { background: var(--critical); }
+    .priority-high { background: var(--high); }
+    .priority-medium { background: var(--medium); }
+    .priority-low { background: var(--low); }
+
+    .rpn-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 62px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: #fff;
+    }
+
+    .rpn-critical { background: var(--critical); }
+    .rpn-high { background: var(--high); }
+    .rpn-medium { background: var(--medium); }
+    .rpn-low { background: var(--low); }
+
+    .expand-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      color: var(--navy);
+      display: grid;
+      place-items: center;
+      padding: 0;
+      font-size: 0.96rem;
+      transform: rotate(0deg);
+    }
+
+    .expand-btn[aria-expanded="true"] {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: var(--blue);
+      transform: rotate(180deg);
+    }
+
+    .detail-row td {
+      padding: 0;
+      background: #f8fbff;
+    }
+
+    .detail-shell {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 280ms ease;
+    }
+
+    .detail-shell.open {
+      max-height: 700px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      padding: 22px;
+    }
+
+    .detail-block {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .detail-block strong {
+      color: var(--navy);
+      font-size: 0.86rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .detail-block p,
+    .detail-block li {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 0.94rem;
+    }
+
+    .detail-block ul,
+    .detail-block ol {
+      margin: 0;
+      padding-left: 18px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .matrix-panel {
+      padding: 22px;
+    }
+
+    .matrix-grid-shell {
+      overflow-x: auto;
+    }
+
+    .matrix-layout {
+      display: grid;
+      grid-template-columns: 68px repeat(10, minmax(52px, 1fr));
+      grid-template-rows: 24px repeat(10, minmax(52px, 1fr)) 40px;
+      min-width: 700px;
+      align-items: stretch;
+      gap: 1px;
+      background: #cbd5e1;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .matrix-cell,
+    .matrix-label,
+    .matrix-axis {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .matrix-axis {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      background: #f8fafc;
+    }
+
+    .matrix-axis.x-title,
+    .matrix-axis.y-title {
+      font-size: 0.84rem;
+      color: var(--navy);
+    }
+
+    .matrix-axis.y-title {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
+    .zone-low { background: rgba(22,163,74,0.16); }
+    .zone-medium { background: rgba(217,119,6,0.18); }
+    .zone-high { background: rgba(234,88,12,0.18); }
+    .zone-critical { background: rgba(220,38,38,0.18); }
+
+    .matrix-marker {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      border: 2px solid rgba(255,255,255,0.95);
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
+      cursor: default;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--navy);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+    }
+
+    .export-bar {
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      background: #f8fafc;
+    }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      background: var(--navy);
+      color: #fff;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      box-shadow: 0 18px 28px rgba(15, 23, 42, 0.2);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 1080px) {
+      .hero,
+      .form-grid,
+      .summary-grid,
+      .risk-card-grid,
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .results-header,
+      .site-header {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 14px;
+      }
+
+      .hero-copy,
+      .hero-setup,
+      .form-panel,
+      .results-header,
+      .top-risks,
+      .matrix-panel {
+        padding: 20px;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .site-header {
+        align-items: flex-start;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .risk-score {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header">
+      <div class="brand">
+        <div class="brand-mark">F</div>
+        <div class="brand-copy">
+          <h1>FMEA.ai</h1>
+          <p>FMEA in seconds, not hours.</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="chip" id="apiStatusChip">API key not set</div>
+      </div>
+    </header>
+
+    <main>
+      <section id="welcomeView" class="view active">
+        <div class="hero">
+          <div class="hero-copy panel">
+            <div class="eyebrow">AI-Powered Reliability Analysis</div>
+            <h2>Professional FMEA generation for real engineering teams.</h2>
+            <div class="tagline">FMEA in seconds, not hours.</div>
+            <p class="description">
+              Describe any mechanical, electrical, or manufacturing system and FMEA.ai generates a complete Failure Mode and Effects Analysis instantly.
+            </p>
+            <div class="hero-grid">
+              <div class="hero-stat">
+                <strong>10-12 modes</strong>
+                <span>Complete coverage across realistic components and failure paths.</span>
+              </div>
+              <div class="hero-stat">
+                <strong>AIAG framing</strong>
+                <span>Scored severity, occurrence, detection, and actionable recommendations.</span>
+              </div>
+              <div class="hero-stat">
+                <strong>30 seconds</strong>
+                <span>From system description to exportable FMEA table.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-setup panel">
+            <div>
+              <h2 class="section-title">Start Here</h2>
+              <p class="section-subtitle">
+                Add your OpenAI API key for live generation, or explore the experience instantly with a built-in hydraulic brake demo.
+              </p>
+            </div>
+
+            <div class="input-group">
+              <label for="apiKeyInput">OpenAI API Key</label>
+              <input id="apiKeyInput" type="password" placeholder="sk-..." autocomplete="off">
+              <div class="hint">Stored locally as <code>fmea_openai_key</code> in your browser.</div>
+            </div>
+
+            <div class="button-row">
+              <button class="btn-secondary" id="demoButton">Try Demo</button>
+              <button class="btn-primary" id="getStartedButton">Get Started</button>
+            </div>
+
+            <div class="hint">
+              Demo mode loads a complete sample FMEA instantly without calling the API.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="inputView" class="view">
+        <div class="workspace">
+          <div class="panel form-panel">
+            <div id="formStatus" class="status-banner"></div>
+            <h2 class="section-title">Create a New FMEA</h2>
+            <p class="section-subtitle">
+              Capture the system context clearly and FMEA.ai will generate a complete, engineering-grade draft in JSON and render it into a working analysis workspace.
+            </p>
+
+            <form id="fmeaForm">
+              <div class="form-grid">
+                <div class="input-group">
+                  <label for="systemName">System / Component Name</label>
+                  <input id="systemName" type="text" placeholder="e.g. Hydraulic Brake Assembly">
+                </div>
+
+                <div class="input-group">
+                  <label for="industry">Industry</label>
+                  <select id="industry">
+                    <option value="">Select industry</option>
+                    <option>Automotive</option>
+                    <option>Aerospace</option>
+                    <option>Manufacturing</option>
+                    <option>Medical Devices</option>
+                    <option>Construction</option>
+                    <option>HVAC</option>
+                    <option>Oil &amp; Gas</option>
+                    <option>Consumer Products</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <div class="input-group full-span">
+                  <label for="systemDescription">System Description</label>
+                  <textarea id="systemDescription" rows="4" placeholder="Describe the system, its components, operating conditions, and any known concerns..."></textarea>
+                </div>
+
+                <div class="input-group full-span">
+                  <label>FMEA Type</label>
+                  <div class="radio-group">
+                    <label class="radio-card">
+                      <input type="radio" name="fmeaType" value="Design FMEA (DFMEA)" checked>
+                      <div class="radio-copy">
+                        <strong>Design FMEA (DFMEA)</strong>
+                        <span>Analyzing product design, component architecture, reliability, and field-use risks.</span>
+                      </div>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="fmeaType" value="Process FMEA (PFMEA)">
+                      <div class="radio-copy">
+                        <strong>Process FMEA (PFMEA)</strong>
+                        <span>Analyzing manufacturing or assembly processes, process controls, and shop-floor failure paths.</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cta-bar">
+                <div class="cta-copy">FMEA.ai uses `gpt-4o` and expects strict JSON output for reliable rendering.</div>
+                <button type="submit" class="btn-primary generate-btn" id="generateButton">Generate FMEA</button>
+              </div>
+            </form>
+
+            <div class="loading-state" id="loadingState">
+              <div class="spinner"></div>
+              <div>Generating complete FMEA analysis...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="resultsView" class="view">
+        <div class="results-stack">
+          <div class="panel results-header">
+            <div>
+              <h2 id="resultsTitle">FMEA Results</h2>
+              <div class="muted" id="resultsSummaryText" style="color: rgba(255,255,255,0.84); max-width: 70ch; line-height: 1.6;"></div>
+              <div class="results-meta" id="resultsMeta"></div>
+            </div>
+            <div class="button-row">
+              <button class="btn-secondary" id="resultsNewAnalysisTop">New Analysis</button>
+            </div>
+          </div>
+
+          <div class="summary-grid" id="summaryGrid"></div>
+
+          <div class="panel top-risks">
+            <div class="panel-header">
+              <h3>Top Risks</h3>
+              <p>Highest-RPN items requiring early cross-functional action.</p>
+            </div>
+            <div class="risk-card-grid" id="topRisks"></div>
+          </div>
+
+          <div class="panel table-panel">
+            <div class="table-toolbar">
+              <div>
+                <h3 style="margin:0; color: var(--navy); letter-spacing:-0.04em;">FMEA Table</h3>
+                <p style="margin:6px 0 0; color: var(--muted);">Sortable analysis table with expandable engineering detail.</p>
+              </div>
+              <div class="chip" id="sortIndicator">Sorted by ID</div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr id="tableHeadRow"></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+            <div class="export-bar">
+              <div class="muted">Copy, export, or reset the current analysis.</div>
+              <div class="button-row">
+                <button class="btn-ghost" id="copyTableButton">Copy Table</button>
+                <button class="btn-ghost" id="exportCsvButton">Export CSV</button>
+                <button class="btn-danger" id="newAnalysisButton">New Analysis</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel matrix-panel">
+            <div class="panel-header">
+              <h3>Risk Matrix</h3>
+              <p>Severity on X-axis, occurrence on Y-axis, numbered markers mapped to failure modes.</p>
+            </div>
+            <div class="matrix-grid-shell">
+              <div class="matrix-layout" id="riskMatrix"></div>
+            </div>
+            <div class="legend">
+              <div class="legend-item"><span class="legend-swatch" style="background: rgba(22,163,74,0.8);"></span>Low Zone</div>
+              <div class="legend-item"><span class="legend-swatch" style="background: rgba(217,119,6,0.75);"></span>Medium Zone</div>
+              <div class="legend-item"><span class="legend-swatch" style="background: rgba(234,88,12,0.8);"></span>High Zone</div>
+              <div class="legend-item"><span class="legend-swatch" style="background: rgba(220,38,38,0.82);"></span>Critical Zone</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = "fmea_openai_key";
+    const API_URL = "https://api.openai.com/v1/chat/completions";
+    const SYSTEM_PROMPT = `You are a senior reliability engineer with expertise in FMEA methodology per AIAG standards. Generate a complete, realistic FMEA for the system described. Return ONLY valid JSON, no markdown, no explanation, just the JSON object.
+
+Return exactly this structure:
+{
+  system_name: string,
+  fmea_type: string,
+  industry: string,
+  generated_date: string,
+  summary: {
+    total_failure_modes: number,
+    critical_count: number,
+    high_count: number,
+    medium_count: number,
+    low_count: number,
+    average_rpn: number,
+    highest_rpn: number
+  },
+  failure_modes: [
+    {
+      id: number,
+      component: string,
+      function: string,
+      failure_mode: string,
+      failure_effect: string,
+      severity: number (1-10),
+      severity_reason: string,
+      potential_causes: [string],
+      occurrence: number (1-10),
+      occurrence_reason: string,
+      current_controls: string,
+      detection: number (1-10),
+      detection_reason: string,
+      rpn: number (sev x occ x det),
+      recommended_actions: [string],
+      responsibility: string,
+      priority: Critical|High|Medium|Low
+    }
+  ]
+}
+
+Generate 10-12 failure modes covering different components.
+Use realistic scores based on actual engineering judgment.
+RPN priority: Critical >200, High >120, Medium >60, Low ≤60
+Make recommended actions specific and actionable.`;
+
+    const DEMO_DATA = {
+      system_name: "Hydraulic Brake Assembly",
+      fmea_type: "Design FMEA (DFMEA)",
+      industry: "Automotive",
+      generated_date: new Date().toISOString().split("T")[0],
+      summary: {
+        total_failure_modes: 10,
+        critical_count: 0,
+        high_count: 7,
+        medium_count: 3,
+        low_count: 0,
+        average_rpn: 91.2,
+        highest_rpn: 120
+      },
+      failure_modes: [
+        {
+          id: 1,
+          component: "Primary piston seal",
+          function: "Maintain hydraulic pressure and retain brake fluid within the master cylinder circuit.",
+          failure_mode: "Brake seal leak",
+          failure_effect: "Hydraulic fluid loss reduces available line pressure, increasing stopping distance and risking brake performance degradation.",
+          severity: 9,
+          severity_reason: "Loss of hydraulic pressure directly affects braking capability and can lead to unsafe stopping performance.",
+          potential_causes: [
+            "Seal material incompatibility with brake fluid additives",
+            "Improper groove tolerance causing seal extrusion",
+            "Aging and thermal hardening of elastomer"
+          ],
+          occurrence: 3,
+          occurrence_reason: "Seal failures are uncommon in validated designs but can occur over life under high thermal cycling.",
+          current_controls: "Material qualification testing, dimensional inspection of seal groove, pressure retention validation, end-of-line leak testing.",
+          detection: 4,
+          detection_reason: "Bench and end-of-line tests detect gross leaks, but slow-life leakage may emerge only after extended service exposure.",
+          rpn: 108,
+          recommended_actions: [
+            "Upgrade seal compound to higher temperature-resistant EPDM formulation",
+            "Tighten groove tolerance stack-up review for the piston/seal interface",
+            "Add accelerated life cycling focused on thermal soak and pressure pulse conditions"
+          ],
+          responsibility: "Brake System Design Engineering",
+          priority: "High"
+        },
+        {
+          id: 2,
+          component: "Hydraulic line circuit",
+          function: "Transmit hydraulic pressure from master cylinder to calipers with minimal compressibility.",
+          failure_mode: "Air in brake line",
+          failure_effect: "Entrained air causes a spongy pedal feel and delayed pressure buildup, reducing driver confidence and brake responsiveness.",
+          severity: 8,
+          severity_reason: "Brake effectiveness is reduced, though some stopping capability remains if fluid volume is retained.",
+          potential_causes: [
+            "Incomplete bleeding during service or assembly",
+            "Loose fitting allowing air ingress",
+            "Reservoir drawdown during maintenance"
+          ],
+          occurrence: 4,
+          occurrence_reason: "Air intrusion can occur through service error or assembly escapes if bleed processes are not robust.",
+          current_controls: "Standardized bleed procedure, assembly work instructions, torque verification on fittings, pedal feel inspection.",
+          detection: 3,
+          detection_reason: "Pedal feel and bleed verification are effective at catching most conditions before release.",
+          rpn: 96,
+          recommended_actions: [
+            "Introduce poka-yoke fill-and-bleed station monitoring with pressure decay confirmation",
+            "Add service manual guidance emphasizing reservoir level management",
+            "Audit fitting torque traceability for brake line assembly stations"
+          ],
+          responsibility: "Manufacturing Engineering and Service Engineering",
+          priority: "High"
+        },
+        {
+          id: 3,
+          component: "Front caliper housing",
+          function: "Convert hydraulic pressure into pad clamping force while maintaining smooth piston and slider movement.",
+          failure_mode: "Caliper corrosion",
+          failure_effect: "Corrosion increases drag or reduces clamping efficiency, causing uneven braking, heat buildup, and reduced stopping performance.",
+          severity: 8,
+          severity_reason: "Brake output becomes inconsistent and can compromise vehicle stability under repeated braking.",
+          potential_causes: [
+            "Inadequate coating thickness on caliper exterior",
+            "Salt spray and moisture ingress in harsh environments",
+            "Galvanic interaction between mating hardware surfaces"
+          ],
+          occurrence: 3,
+          occurrence_reason: "Well-coated calipers are generally durable, but field exposure in severe environments can create degradation risk.",
+          current_controls: "Salt spray coating validation, supplier plating specification, corrosion resistance material review, warranty return monitoring.",
+          detection: 5,
+          detection_reason: "Laboratory validation helps, but field corrosion progression may not be visible until functional drag symptoms appear.",
+          rpn: 120,
+          recommended_actions: [
+            "Increase coating robustness on exposed caliper surfaces and bracket interfaces",
+            "Add debris shield review for high-splash wheel locations",
+            "Expand corrosion durability test matrix to include cyclic brine and gravel exposure"
+          ],
+          responsibility: "Materials Engineering",
+          priority: "High"
+        },
+        {
+          id: 4,
+          component: "Master cylinder assembly",
+          function: "Generate and distribute hydraulic pressure from driver pedal input to brake circuits.",
+          failure_mode: "Master cylinder failure",
+          failure_effect: "Internal bypass or mechanical failure can result in total brake loss or severely reduced braking capability.",
+          severity: 10,
+          severity_reason: "Failure can eliminate primary braking function and create an immediate vehicle safety hazard.",
+          potential_causes: [
+            "Primary piston cup inversion",
+            "Bore surface damage causing internal leakage",
+            "Assembly contamination leading to check valve malfunction"
+          ],
+          occurrence: 2,
+          occurrence_reason: "Catastrophic master cylinder failure is rare with validated design and controlled supplier processes.",
+          current_controls: "Supplier PPAP, hydraulic pressure endurance testing, contamination control requirements, end-of-line brake function test.",
+          detection: 3,
+          detection_reason: "Functional testing identifies most assembly-related failures before shipment, though rare field degradation remains possible.",
+          rpn: 60,
+          recommended_actions: [
+            "Increase bore surface finish audit frequency at supplier",
+            "Add contamination particle limit verification at subassembly stations",
+            "Review fail-safe circuit redundancy assumptions during design validation"
+          ],
+          responsibility: "Brake System Design Engineering",
+          priority: "Medium"
+        },
+        {
+          id: 5,
+          component: "Steel brake line",
+          function: "Route pressurized brake fluid between hydraulic modules and corner brake assemblies.",
+          failure_mode: "Brake line fatigue crack",
+          failure_effect: "Gradual fluid loss reduces pressure capability over time and may eventually lead to partial circuit failure.",
+          severity: 9,
+          severity_reason: "Loss of hydraulic integrity significantly impairs braking and may worsen progressively without driver awareness.",
+          potential_causes: [
+            "Insufficient line support near vibration sources",
+            "High-cycle flexure from chassis motion",
+            "Stress concentration at bend radii or flare transitions"
+          ],
+          occurrence: 2,
+          occurrence_reason: "Proper routing and support make fatigue uncommon, but vehicle vibration environments can expose weak points.",
+          current_controls: "Routing review, vibration durability test, clamp placement standards, line forming inspection.",
+          detection: 6,
+          detection_reason: "Fatigue cracks often develop in service and are difficult to identify before leakage symptoms emerge.",
+          rpn: 108,
+          recommended_actions: [
+            "Increase clamp support at high-vibration spans near suspension interfaces",
+            "Re-evaluate bend radii for stress concentration reduction",
+            "Add resonance-focused durability instrumentation on vehicle-level testing"
+          ],
+          responsibility: "Chassis Design Engineering",
+          priority: "High"
+        },
+        {
+          id: 6,
+          component: "Brake rotor",
+          function: "Provide friction interface for pads and dissipate braking heat consistently.",
+          failure_mode: "Rotor warping",
+          failure_effect: "Rotor thickness variation causes vibration, reduced stopping smoothness, and customer dissatisfaction under braking.",
+          severity: 6,
+          severity_reason: "Braking remains available, but performance and comfort are degraded and can mask more serious issues.",
+          potential_causes: [
+            "Uneven thermal loading during repeated hard stops",
+            "Improper rotor material heat treatment",
+            "Hub mounting surface contamination causing runout"
+          ],
+          occurrence: 5,
+          occurrence_reason: "Rotor distortion is moderately common in severe duty cycles or when assembly flatness is poorly controlled.",
+          current_controls: "Rotor runout check, material certification, thermal performance validation, service installation instructions.",
+          detection: 2,
+          detection_reason: "Runout and brake judder are generally detectable during test drives and service inspection.",
+          rpn: 60,
+          recommended_actions: [
+            "Tighten hub face cleanliness requirements during assembly",
+            "Review rotor alloy and vent geometry for thermal stability",
+            "Add high-energy stop endurance criteria to validation plan"
+          ],
+          responsibility: "Brake Hardware Engineering",
+          priority: "Medium"
+        },
+        {
+          id: 7,
+          component: "Brake pad friction material",
+          function: "Generate friction force against rotor to convert vehicle kinetic energy into heat.",
+          failure_mode: "Brake pad wear beyond limit",
+          failure_effect: "Reduced friction material thickness lowers braking efficiency and may damage rotor surfaces if ignored.",
+          severity: 7,
+          severity_reason: "Stopping performance degrades materially, though the issue is usually progressive rather than sudden.",
+          potential_causes: [
+            "High-duty braking cycles",
+            "Abrasive contamination at wheel end",
+            "Friction formulation with poor wear resistance"
+          ],
+          occurrence: 6,
+          occurrence_reason: "Pad wear is an expected life-limiting mode and becomes likely if service intervals are not maintained.",
+          current_controls: "Pad wear sensor strategy, scheduled maintenance guidance, material wear testing, dealership inspection procedure.",
+          detection: 2,
+          detection_reason: "Wear is visible during service and sensors or noise indicators provide timely feedback in most cases.",
+          rpn: 84,
+          recommended_actions: [
+            "Optimize friction material for improved wear life in heavy-use duty cycles",
+            "Add clearer maintenance interval guidance for high-mileage fleet users",
+            "Validate wear indicator trigger point against rotor protection margin"
+          ],
+          responsibility: "Friction Materials Engineering",
+          priority: "High"
+        },
+        {
+          id: 8,
+          component: "Caliper piston",
+          function: "Translate hydraulic pressure into linear motion to clamp the pad against the rotor.",
+          failure_mode: "Caliper piston seizure",
+          failure_effect: "Piston binding causes uneven braking force, pull, overheating, and accelerated pad wear on one side.",
+          severity: 7,
+          severity_reason: "Vehicle control and braking consistency are affected, especially during repeated stops.",
+          potential_causes: [
+            "Corrosion under piston boot",
+            "Surface finish defects on piston or bore",
+            "Contaminant ingress into caliper cavity"
+          ],
+          occurrence: 3,
+          occurrence_reason: "Seizure risk is limited in protected designs but rises with environmental exposure and contamination.",
+          current_controls: "Boot sealing validation, piston finish inspection, contamination controls, caliper drag test.",
+          detection: 4,
+          detection_reason: "Drag and uneven wear may be detected in testing, but progressive sticking may develop later in field use.",
+          rpn: 84,
+          recommended_actions: [
+            "Improve boot retention geometry to reduce moisture ingress",
+            "Add bore surface roughness monitoring at caliper supplier",
+            "Expand drag durability testing after corrosion exposure"
+          ],
+          responsibility: "Supplier Quality Engineering",
+          priority: "High"
+        },
+        {
+          id: 9,
+          component: "Brake fluid reservoir and fluid",
+          function: "Store hydraulic fluid and maintain fluid properties across operating temperature range.",
+          failure_mode: "Brake fluid contamination",
+          failure_effect: "Water or foreign contamination reduces boiling point and corrosion resistance, increasing fade risk under thermal load.",
+          severity: 8,
+          severity_reason: "Brake fade during high-energy use can materially reduce braking effectiveness in demanding conditions.",
+          potential_causes: [
+            "Moisture ingress through reservoir cap or service exposure",
+            "Use of incorrect fluid specification",
+            "Contamination during fill process"
+          ],
+          occurrence: 3,
+          occurrence_reason: "Contamination is not frequent in controlled systems but can arise over service life or through maintenance error.",
+          current_controls: "Fluid specification control, cap seal validation, fill station cleanliness requirements, service maintenance guidance.",
+          detection: 5,
+          detection_reason: "Fluid degradation is not obvious without testing and often becomes apparent only under elevated brake temperatures.",
+          rpn: 120,
+          recommended_actions: [
+            "Improve reservoir sealing review for long-term moisture ingress resistance",
+            "Add service warning label emphasizing DOT fluid compatibility",
+            "Audit fill equipment contamination controls and change-out intervals"
+          ],
+          responsibility: "Systems Engineering and Service Engineering",
+          priority: "High"
+        },
+        {
+          id: 10,
+          component: "ABS wheel speed sensor",
+          function: "Provide wheel speed feedback to the ABS controller for slip management during braking events.",
+          failure_mode: "ABS sensor failure",
+          failure_effect: "Loss of wheel speed input disables ABS intervention, reducing braking stability on low-traction surfaces.",
+          severity: 6,
+          severity_reason: "Base braking remains functional, but vehicle controllability under emergency or low-friction conditions is reduced.",
+          potential_causes: [
+            "Harness damage from debris or routing abrasion",
+            "Sensor contamination from metallic particles",
+            "Connector seal failure causing water intrusion"
+          ],
+          occurrence: 4,
+          occurrence_reason: "Sensor field issues are moderately possible due to wheel-end environment and exposure to debris.",
+          current_controls: "Diagnostic fault detection, harness routing review, connector seal validation, on-vehicle ABS functional check.",
+          detection: 3,
+          detection_reason: "Electronic diagnostics typically catch sensor signal loss quickly and illuminate a fault for service action.",
+          rpn: 72,
+          recommended_actions: [
+            "Increase harness abrasion protection near suspension travel points",
+            "Review sensor shielding against metallic debris accumulation",
+            "Enhance connector ingress testing under splash and thermal cycling"
+          ],
+          responsibility: "Electrical Systems Engineering",
+          priority: "Medium"
+        }
+      ]
+    };
+
+    const state = {
+      currentData: null,
+      sortKey: "id",
+      sortDirection: "asc"
+    };
+
+    const columns = [
+      { key: "expand", label: "", sortable: false },
+      { key: "id", label: "#", sortable: true },
+      { key: "component", label: "Component", sortable: true },
+      { key: "failure_mode", label: "Failure Mode", sortable: true },
+      { key: "failure_effect", label: "Effect", sortable: true },
+      { key: "severity", label: "SEV", sortable: true },
+      { key: "occurrence", label: "OCC", sortable: true },
+      { key: "detection", label: "DET", sortable: true },
+      { key: "rpn", label: "RPN", sortable: true },
+      { key: "priority", label: "Priority", sortable: true },
+      { key: "recommended_actions", label: "Actions", sortable: true }
+    ];
+
+    const welcomeView = document.getElementById("welcomeView");
+    const inputView = document.getElementById("inputView");
+    const resultsView = document.getElementById("resultsView");
+    const apiKeyInput = document.getElementById("apiKeyInput");
+    const apiStatusChip = document.getElementById("apiStatusChip");
+    const demoButton = document.getElementById("demoButton");
+    const getStartedButton = document.getElementById("getStartedButton");
+    const form = document.getElementById("fmeaForm");
+    const formStatus = document.getElementById("formStatus");
+    const loadingState = document.getElementById("loadingState");
+    const generateButton = document.getElementById("generateButton");
+    const tableHeadRow = document.getElementById("tableHeadRow");
+    const tableBody = document.getElementById("tableBody");
+    const summaryGrid = document.getElementById("summaryGrid");
+    const topRisks = document.getElementById("topRisks");
+    const riskMatrix = document.getElementById("riskMatrix");
+    const sortIndicator = document.getElementById("sortIndicator");
+    const resultsTitle = document.getElementById("resultsTitle");
+    const resultsSummaryText = document.getElementById("resultsSummaryText");
+    const resultsMeta = document.getElementById("resultsMeta");
+    const copyTableButton = document.getElementById("copyTableButton");
+    const exportCsvButton = document.getElementById("exportCsvButton");
+    const newAnalysisButton = document.getElementById("newAnalysisButton");
+    const resultsNewAnalysisTop = document.getElementById("resultsNewAnalysisTop");
+    const toast = document.getElementById("toast");
+
+    function init() {
+      const savedKey = localStorage.getItem(STORAGE_KEY) || "";
+      apiKeyInput.value = savedKey;
+      updateApiStatus(savedKey);
+      apiKeyInput.addEventListener("input", handleApiKeyInput);
+      demoButton.addEventListener("click", handleDemo);
+      getStartedButton.addEventListener("click", handleGetStarted);
+      form.addEventListener("submit", handleGenerate);
+      copyTableButton.addEventListener("click", copyTable);
+      exportCsvButton.addEventListener("click", exportCsv);
+      newAnalysisButton.addEventListener("click", resetToInput);
+      resultsNewAnalysisTop.addEventListener("click", resetToInput);
+      renderTableHeaders();
+    }
+
+    function handleApiKeyInput() {
+      const value = apiKeyInput.value.trim();
+      if (value) {
+        localStorage.setItem(STORAGE_KEY, value);
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+      updateApiStatus(value);
+    }
+
+    function updateApiStatus(key) {
+      apiStatusChip.textContent = key ? "API key saved locally" : "API key not set";
+    }
+
+    function showView(name) {
+      welcomeView.classList.toggle("active", name === "welcome");
+      inputView.classList.toggle("active", name === "input");
+      resultsView.classList.toggle("active", name === "results");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showStatus(message, type = "error", withRetry = false) {
+      formStatus.className = `status-banner show status-${type}`;
+      formStatus.innerHTML = "";
+      const messageNode = document.createElement("div");
+      messageNode.textContent = message;
+      formStatus.appendChild(messageNode);
+      if (withRetry) {
+        const retry = document.createElement("button");
+        retry.className = "btn-secondary";
+        retry.style.marginTop = "12px";
+        retry.textContent = "Retry";
+        retry.addEventListener("click", () => form.requestSubmit());
+        formStatus.appendChild(retry);
+      }
+    }
+
+    function clearStatus() {
+      formStatus.className = "status-banner";
+      formStatus.textContent = "";
+    }
+
+    function setLoading(loading) {
+      loadingState.classList.toggle("show", loading);
+      generateButton.disabled = loading;
+      generateButton.textContent = loading ? "Generating..." : "Generate FMEA";
+    }
+
+    function handleGetStarted() {
+      const key = apiKeyInput.value.trim();
+      if (!key) {
+        showToast("Add an API key to use live generation.");
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, key);
+      updateApiStatus(key);
+      clearStatus();
+      showView("input");
+    }
+
+    function handleDemo() {
+      clearStatus();
+      state.currentData = normalizeFmeaData(DEMO_DATA);
+      renderResults();
+      showToast("Demo FMEA loaded.");
+      showView("results");
+    }
+
+    function resetToInput() {
+      clearStatus();
+      showView("input");
+    }
+
+    async function handleGenerate(event) {
+      event.preventDefault();
+      clearStatus();
+
+      const apiKey = (localStorage.getItem(STORAGE_KEY) || "").trim();
+      const systemName = document.getElementById("systemName").value.trim();
+      const systemDescription = document.getElementById("systemDescription").value.trim();
+      const industry = document.getElementById("industry").value;
+      const fmeaType = document.querySelector('input[name="fmeaType"]:checked')?.value || "";
+
+      if (!apiKey) {
+        showStatus("An OpenAI API key is required for live generation. Add your key on the welcome screen.");
+        return;
+      }
+      if (!systemName) {
+        showStatus("Enter a system or component name before generating.");
+        return;
+      }
+      if (!systemDescription) {
+        showStatus("Provide a system description so the model has enough engineering context.");
+        return;
+      }
+      if (!industry) {
+        showStatus("Select an industry so the FMEA uses the right operating context.");
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const payload = {
+          model: "gpt-4o",
+          temperature: 0.4,
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            {
+              role: "user",
+              content:
+                `System Name: ${systemName}\n` +
+                `System Description: ${systemDescription}\n` +
+                `Industry: ${industry}\n` +
+                `FMEA Type: ${fmeaType}\n` +
+                "Generate a complete FMEA matching the required JSON schema exactly."
+            }
+          ]
+        };
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const raw = await response.text();
+        let parsed;
+
+        try {
+          parsed = JSON.parse(raw);
+        } catch (parseTransportError) {
+          throw new Error("OpenAI returned an unreadable response.");
+        }
+
+        if (!response.ok) {
+          const apiMessage = parsed?.error?.message || "OpenAI API request failed.";
+          throw new Error(apiMessage);
+        }
+
+        const content = parsed?.choices?.[0]?.message?.content;
+        if (!content) {
+          throw new Error("No model output was returned.");
+        }
+
+        let modelJson;
+        try {
+          modelJson = JSON.parse(content);
+        } catch (jsonError) {
+          throw new Error("Model response was not valid JSON. Please retry.");
+        }
+
+        state.currentData = normalizeFmeaData(modelJson);
+        renderResults();
+        showView("results");
+      } catch (error) {
+        showStatus(error.message || "Generation failed.", "error", true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function normalizeFmeaData(data) {
+      const failureModes = Array.isArray(data.failure_modes) ? data.failure_modes : [];
+      const normalizedModes = failureModes.map((mode, index) => {
+        const severity = clampNumber(mode.severity, 1, 10);
+        const occurrence = clampNumber(mode.occurrence, 1, 10);
+        const detection = clampNumber(mode.detection, 1, 10);
+        const rpn = severity * occurrence * detection;
+        const priority = normalizePriority(mode.priority, rpn);
+        return {
+          id: Number(mode.id) || index + 1,
+          component: safeText(mode.component),
+          function: safeText(mode.function),
+          failure_mode: safeText(mode.failure_mode),
+          failure_effect: safeText(mode.failure_effect),
+          severity,
+          severity_reason: safeText(mode.severity_reason),
+          potential_causes: normalizeStringArray(mode.potential_causes),
+          occurrence,
+          occurrence_reason: safeText(mode.occurrence_reason),
+          current_controls: safeText(mode.current_controls),
+          detection,
+          detection_reason: safeText(mode.detection_reason),
+          rpn,
+          recommended_actions: normalizeStringArray(mode.recommended_actions),
+          responsibility: safeText(mode.responsibility),
+          priority
+        };
+      });
+
+      const summary = computeSummary(normalizedModes, data.summary || {});
+
+      return {
+        system_name: safeText(data.system_name) || "Generated FMEA",
+        fmea_type: safeText(data.fmea_type) || "FMEA",
+        industry: safeText(data.industry) || "Unspecified",
+        generated_date: safeText(data.generated_date) || new Date().toISOString().split("T")[0],
+        summary,
+        failure_modes: normalizedModes
+      };
+    }
+
+    function safeText(value) {
+      return typeof value === "string" ? value.trim() : "";
+    }
+
+    function normalizeStringArray(value) {
+      if (!Array.isArray(value)) return [];
+      return value.map(item => safeText(String(item))).filter(Boolean);
+    }
+
+    function clampNumber(value, min, max) {
+      const num = Number(value);
+      if (!Number.isFinite(num)) return min;
+      return Math.max(min, Math.min(max, Math.round(num)));
+    }
+
+    function normalizePriority(priority, rpn) {
+      const clean = safeText(priority).toLowerCase();
+      if (["critical", "high", "medium", "low"].includes(clean)) {
+        return clean.charAt(0).toUpperCase() + clean.slice(1);
+      }
+      if (rpn > 200) return "Critical";
+      if (rpn > 120) return "High";
+      if (rpn > 60) return "Medium";
+      return "Low";
+    }
+
+    function computeSummary(modes, incomingSummary) {
+      const counts = { Critical: 0, High: 0, Medium: 0, Low: 0 };
+      let totalRpn = 0;
+      let highest = 0;
+      modes.forEach(mode => {
+        counts[mode.priority] = (counts[mode.priority] || 0) + 1;
+        totalRpn += mode.rpn;
+        highest = Math.max(highest, mode.rpn);
+      });
+      return {
+        total_failure_modes: modes.length || Number(incomingSummary.total_failure_modes) || 0,
+        critical_count: counts.Critical,
+        high_count: counts.High,
+        medium_count: counts.Medium,
+        low_count: counts.Low,
+        average_rpn: modes.length ? Number((totalRpn / modes.length).toFixed(1)) : 0,
+        highest_rpn: highest
+      };
+    }
+
+    function renderResults() {
+      if (!state.currentData) return;
+      resultsTitle.textContent = `${state.currentData.system_name}`;
+      resultsSummaryText.textContent = `${state.currentData.fmea_type} generated for ${state.currentData.industry}. ${state.currentData.summary.total_failure_modes} failure modes analyzed with an average RPN of ${state.currentData.summary.average_rpn}.`;
+      renderMeta();
+      renderSummaryCards();
+      renderTopRisks();
+      renderTable();
+      renderRiskMatrix();
+    }
+
+    function renderMeta() {
+      resultsMeta.innerHTML = "";
+      [
+        state.currentData.fmea_type,
+        state.currentData.industry,
+        `Generated ${state.currentData.generated_date}`,
+        `Highest RPN ${state.currentData.summary.highest_rpn}`
+      ].forEach(text => {
+        const pill = document.createElement("div");
+        pill.className = "meta-pill";
+        pill.textContent = text;
+        resultsMeta.appendChild(pill);
+      });
+    }
+
+    function renderSummaryCards() {
+      const cards = [
+        {
+          label: "Total Failure Modes",
+          value: state.currentData.summary.total_failure_modes,
+          className: "blue"
+        },
+        {
+          label: "Critical Items RPN>200",
+          value: state.currentData.summary.critical_count,
+          className: "red"
+        },
+        {
+          label: "High Priority Items RPN>120",
+          value: state.currentData.failure_modes.filter(item => item.rpn > 120).length,
+          className: "orange"
+        },
+        {
+          label: "Average RPN",
+          value: state.currentData.summary.average_rpn,
+          className: "gray"
+        }
+      ];
+      summaryGrid.innerHTML = "";
+      cards.forEach(card => {
+        const node = document.createElement("div");
+        node.className = `summary-card ${card.className}`;
+        node.innerHTML = `<span>${card.label}</span><strong>${card.value}</strong>`;
+        summaryGrid.appendChild(node);
+      });
+    }
+
+    function renderTopRisks() {
+      topRisks.innerHTML = "";
+      const topItems = [...state.currentData.failure_modes]
+        .sort((a, b) => b.rpn - a.rpn)
+        .slice(0, 3);
+
+      topItems.forEach(item => {
+        const card = document.createElement("div");
+        const riskClass = getRiskClass(item.rpn);
+        card.className = "risk-card";
+        card.innerHTML = `
+          <div class="risk-card-header">
+            <div>
+              <div class="risk-card-title">${escapeHtml(item.failure_mode)}</div>
+              <div class="risk-card-subtitle">${escapeHtml(item.component)}</div>
+            </div>
+            <div class="risk-score">
+              <span>RPN</span>
+              <strong style="color:${getRiskColor(riskClass)};">${item.rpn}</strong>
+            </div>
+          </div>
+          <p>${escapeHtml(item.recommended_actions[0] || "No action listed.")}</p>
+          <div class="owner">${escapeHtml(item.responsibility)}</div>
+        `;
+        topRisks.appendChild(card);
+      });
+    }
+
+    function renderTableHeaders() {
+      tableHeadRow.innerHTML = "";
+      columns.forEach(column => {
+        const th = document.createElement("th");
+        if (column.sortable) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.innerHTML = `${column.label}<span aria-hidden="true">↕</span>`;
+          button.addEventListener("click", () => changeSort(column.key));
+          th.appendChild(button);
+        } else {
+          th.textContent = column.label;
+        }
+        tableHeadRow.appendChild(th);
+      });
+    }
+
+    function changeSort(key) {
+      if (state.sortKey === key) {
+        state.sortDirection = state.sortDirection === "asc" ? "desc" : "asc";
+      } else {
+        state.sortKey = key;
+        state.sortDirection = "asc";
+      }
+      renderTable();
+    }
+
+    function getSortedModes() {
+      const modes = [...(state.currentData?.failure_modes || [])];
+      const direction = state.sortDirection === "asc" ? 1 : -1;
+      return modes.sort((a, b) => {
+        const aValue = a[state.sortKey];
+        const bValue = b[state.sortKey];
+        if (typeof aValue === "number" && typeof bValue === "number") {
+          return (aValue - bValue) * direction;
+        }
+        const aText = Array.isArray(aValue) ? aValue.join(" ") : String(aValue ?? "");
+        const bText = Array.isArray(bValue) ? bValue.join(" ") : String(bValue ?? "");
+        return aText.localeCompare(bText) * direction;
+      });
+    }
+
+    function renderTable() {
+      if (!state.currentData) return;
+      const sortedModes = getSortedModes();
+      sortIndicator.textContent = `Sorted by ${prettySortLabel(state.sortKey)} (${state.sortDirection})`;
+      tableBody.innerHTML = "";
+
+      sortedModes.forEach(item => {
+        const mainRow = document.createElement("tr");
+        const detailRow = document.createElement("tr");
+        detailRow.className = "detail-row";
+
+        const expandCell = document.createElement("td");
+        const expandButton = document.createElement("button");
+        expandButton.type = "button";
+        expandButton.className = "expand-btn";
+        expandButton.setAttribute("aria-expanded", "false");
+        expandButton.setAttribute("aria-label", `Expand details for ${item.failure_mode}`);
+        expandButton.innerHTML = "▼";
+        expandCell.appendChild(expandButton);
+        mainRow.appendChild(expandCell);
+
+        mainRow.appendChild(makeTextCell(item.id));
+        mainRow.appendChild(makeTextCell(item.component));
+        mainRow.appendChild(makeTextCell(item.failure_mode));
+        mainRow.appendChild(makeTextCell(item.failure_effect));
+        mainRow.appendChild(makeTextCell(item.severity));
+        mainRow.appendChild(makeTextCell(item.occurrence));
+        mainRow.appendChild(makeTextCell(item.detection));
+
+        const rpnCell = document.createElement("td");
+        rpnCell.innerHTML = `<span class="rpn-pill ${getRpnClass(item.rpn)}">${item.rpn}</span>`;
+        mainRow.appendChild(rpnCell);
+
+        const priorityCell = document.createElement("td");
+        priorityCell.innerHTML = `<span class="priority-badge priority-${item.priority.toLowerCase()}">${escapeHtml(item.priority)}</span>`;
+        mainRow.appendChild(priorityCell);
+
+        const actionsCell = document.createElement("td");
+        actionsCell.className = "cell-actions";
+        actionsCell.textContent = item.recommended_actions.slice(0, 2).join("; ");
+        mainRow.appendChild(actionsCell);
+
+        const detailCell = document.createElement("td");
+        detailCell.colSpan = columns.length;
+        const detailShell = document.createElement("div");
+        detailShell.className = "detail-shell";
+        detailShell.innerHTML = `
+          <div class="detail-grid">
+            <div class="detail-block">
+              <strong>Function</strong>
+              <p>${escapeHtml(item.function)}</p>
+            </div>
+            <div class="detail-block">
+              <strong>Current Controls</strong>
+              <p>${escapeHtml(item.current_controls)}</p>
+            </div>
+            <div class="detail-block">
+              <strong>Potential Causes</strong>
+              <ul>${item.potential_causes.map(cause => `<li>${escapeHtml(cause)}</li>`).join("")}</ul>
+            </div>
+            <div class="detail-block">
+              <strong>Recommended Actions</strong>
+              <ol>${item.recommended_actions.map(action => `<li>${escapeHtml(action)}</li>`).join("")}</ol>
+            </div>
+            <div class="detail-block">
+              <strong>Severity Reasoning</strong>
+              <p>${escapeHtml(item.severity_reason)}</p>
+            </div>
+            <div class="detail-block">
+              <strong>Occurrence Reasoning</strong>
+              <p>${escapeHtml(item.occurrence_reason)}</p>
+            </div>
+            <div class="detail-block">
+              <strong>Detection Reasoning</strong>
+              <p>${escapeHtml(item.detection_reason)}</p>
+            </div>
+            <div class="detail-block">
+              <strong>Responsible Team</strong>
+              <p>${escapeHtml(item.responsibility)}</p>
+            </div>
+          </div>
+        `;
+        detailCell.appendChild(detailShell);
+        detailRow.appendChild(detailCell);
+
+        expandButton.addEventListener("click", () => {
+          const open = expandButton.getAttribute("aria-expanded") === "true";
+          expandButton.setAttribute("aria-expanded", String(!open));
+          detailShell.classList.toggle("open", !open);
+        });
+
+        tableBody.appendChild(mainRow);
+        tableBody.appendChild(detailRow);
+      });
+    }
+
+    function makeTextCell(value) {
+      const td = document.createElement("td");
+      td.textContent = String(value ?? "");
+      return td;
+    }
+
+    function prettySortLabel(key) {
+      const column = columns.find(item => item.key === key);
+      return column ? column.label || "Details" : key;
+    }
+
+    function renderRiskMatrix() {
+      riskMatrix.innerHTML = "";
+      addMatrixHeaders();
+      for (let y = 10; y >= 1; y -= 1) {
+        const yLabel = document.createElement("div");
+        yLabel.className = "matrix-axis";
+        yLabel.textContent = y;
+        riskMatrix.appendChild(yLabel);
+
+        for (let x = 1; x <= 10; x += 1) {
+          const cell = document.createElement("div");
+          cell.className = `matrix-cell ${getZoneClass(x * y)}`;
+          const matches = state.currentData.failure_modes.filter(mode => mode.severity === x && mode.occurrence === y);
+          matches.forEach(mode => {
+            const marker = document.createElement("div");
+            marker.className = "matrix-marker";
+            marker.style.background = getRiskColor(getRiskClass(mode.rpn));
+            marker.textContent = mode.id;
+            marker.title = `${mode.failure_mode} | RPN ${mode.rpn}`;
+            cell.appendChild(marker);
+          });
+          riskMatrix.appendChild(cell);
+        }
+      }
+
+      const yTitle = document.createElement("div");
+      yTitle.className = "matrix-axis y-title";
+      yTitle.textContent = "Occurrence";
+      riskMatrix.appendChild(yTitle);
+
+      for (let x = 1; x <= 10; x += 1) {
+        const label = document.createElement("div");
+        label.className = "matrix-axis";
+        label.textContent = x;
+        riskMatrix.appendChild(label);
+      }
+    }
+
+    function addMatrixHeaders() {
+      const blank = document.createElement("div");
+      blank.className = "matrix-axis";
+      blank.textContent = "";
+      riskMatrix.appendChild(blank);
+
+      for (let x = 1; x <= 10; x += 1) {
+        const axis = document.createElement("div");
+        axis.className = "matrix-axis";
+        axis.textContent = x;
+        riskMatrix.appendChild(axis);
+      }
+    }
+
+    function getZoneClass(score) {
+      if (score > 60) return "zone-critical";
+      if (score > 40) return "zone-high";
+      if (score > 20) return "zone-medium";
+      return "zone-low";
+    }
+
+    function getRiskClass(rpn) {
+      if (rpn > 200) return "critical";
+      if (rpn > 120) return "high";
+      if (rpn > 60) return "medium";
+      return "low";
+    }
+
+    function getRpnClass(rpn) {
+      return `rpn-${getRiskClass(rpn)}`;
+    }
+
+    function getRiskColor(riskClass) {
+      switch (riskClass) {
+        case "critical":
+          return "#dc2626";
+        case "high":
+          return "#ea580c";
+        case "medium":
+          return "#d97706";
+        default:
+          return "#16a34a";
+      }
+    }
+
+    async function copyTable() {
+      if (!state.currentData) return;
+      const header = ["#", "Component", "Failure Mode", "Effect", "SEV", "OCC", "DET", "RPN", "Priority", "Actions"];
+      const rows = getSortedModes().map(item => [
+        item.id,
+        item.component,
+        item.failure_mode,
+        item.failure_effect,
+        item.severity,
+        item.occurrence,
+        item.detection,
+        item.rpn,
+        item.priority,
+        item.recommended_actions.join(" | ")
+      ]);
+      const text = [header.join("\t"), ...rows.map(row => row.join("\t"))].join("\n");
+
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Copied!");
+      } catch (error) {
+        showToast("Clipboard copy failed.");
+      }
+    }
+
+    function exportCsv() {
+      if (!state.currentData) return;
+      const header = [
+        "ID",
+        "Component",
+        "Function",
+        "Failure Mode",
+        "Failure Effect",
+        "Severity",
+        "Severity Reason",
+        "Potential Causes",
+        "Occurrence",
+        "Occurrence Reason",
+        "Current Controls",
+        "Detection",
+        "Detection Reason",
+        "RPN",
+        "Recommended Actions",
+        "Responsibility",
+        "Priority"
+      ];
+      const rows = state.currentData.failure_modes.map(item => [
+        item.id,
+        item.component,
+        item.function,
+        item.failure_mode,
+        item.failure_effect,
+        item.severity,
+        item.severity_reason,
+        item.potential_causes.join(" | "),
+        item.occurrence,
+        item.occurrence_reason,
+        item.current_controls,
+        item.detection,
+        item.detection_reason,
+        item.rpn,
+        item.recommended_actions.join(" | "),
+        item.responsibility,
+        item.priority
+      ]);
+
+      const csv = [header, ...rows]
+        .map(row => row.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(","))
+        .join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${slugify(state.currentData.system_name)}_fmea.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast("CSV exported.");
+    }
+
+    function slugify(text) {
+      return text.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || "fmea";
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(showToast._timer);
+      showToast._timer = window.setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2000);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    init();
+  </script>
+</body>
+</html>
